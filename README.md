@@ -20,7 +20,7 @@ La aplicación debe cumplir con los siguientes **requisitos funcionales:**
 
     - Login para introducir email y password (datos de prueba serán proporcionados junto con la prueba técnica)
     - Recibir el token que retorna el login y utilizarlo en las siguientes consultas
-    - Obtener el IMEI del dispositivo para utilizarlo como identificador en las consultas
+    - Obtener el IMEI del dispositivo (Android version < 10) o solicitar el número de teléfono al usuario para utilizarlo como identificador en las consultas
     - Obtener información del GPS (latitud y longitud) y transmitirlo a un endpoint cada 30 segundos
     - Si la consulta falla se debe mostrar en pantalla de alguna manera que existe un error (error handle)
 
@@ -64,7 +64,7 @@ Content-Type: application/json
 Body: 
 ```json
 {
-  "IMEI": "String",
+  "identifier": "String",
   "gps": {
     "latitude": "Decimal(10,8)",
     "longitude": "Decimal(11, 8)"
