@@ -32,6 +32,7 @@ Por fines demostrativos y en honor al tiempo, no es necesario validar el formula
 Endpoint: /api/login
 Method: Post
 Content-Type: application/json
+Accept: application/json
 Body: 
 ```json
 {
@@ -61,6 +62,7 @@ Method: Post
 Authentication: OAuth2
 Header: Authorization: Bearer TOKEN
 Content-Type: application/json
+Accept: application/json
 Body: 
 ```json
 {
