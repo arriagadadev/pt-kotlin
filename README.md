@@ -66,8 +66,8 @@ Body:
 {
   "IMEI": "String",
   "gps": {
-    latitude: "Decimal(10,8)",
-    longitude: "Decimal(11, 8)"
+    "latitude": "Decimal(10,8)",
+    "longitude": "Decimal(11, 8)"
   }
 }
 ```
