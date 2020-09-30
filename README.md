@@ -20,9 +20,9 @@ La aplicación debe cumplir con los siguientes **requisitos funcionales:**
 
     - Login para introducir email y password (datos de prueba serán proporcionados junto con la prueba técnica)
     - Recibir el token que retorna el login y utilizarlo en las siguientes consultas
-    - Obtener el IMEI del dispositivo para utilizarlo como identificador
+    - Obtener el IMEI del dispositivo para utilizarlo como identificador en las consultas
     - Obtener información del GPS (latitud y longitud) y transmitirlo a un endpoint cada 30 segundos
-    - Si la tranmisión de datos falla por alguna razón se debe mostrar en pantalla de alguna manera (error handle)
+    - Si la consulta falla se debe mostrar en pantalla de alguna manera que existe un error (error handle)
 
 Por fines demostrativos y en honor al tiempo, no es necesario validar el formulario del login.
 
