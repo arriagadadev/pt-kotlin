@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Pt Kotlin</string>
+    <string name="edit_text_welcome">Bienvenido</string>
+    <string name="hint_username">Correo</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="button_login">Iniciar Sesión</string>
 </resources>
