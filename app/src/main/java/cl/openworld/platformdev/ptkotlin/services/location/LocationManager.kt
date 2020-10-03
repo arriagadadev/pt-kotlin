@@ -1,11 +1,11 @@
 package cl.openworld.platformdev.ptkotlin.services.location
 
-import android.app.Activity
+import android.Manifest
+import android.accounts.AccountsException
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Looper
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -16,13 +16,9 @@ import timber.log.Timber
 class LocationManager(private val context: Context) {
 
 
-    private val locationPermissionRequest = 1
-
-    private val locationPermission = "android.permission.ACCESS_FINE_LOCATION"
-
     private val locationRequest = LocationRequest.create()?.apply {
-        interval = 1000 * 30
-        fastestInterval = 2000
+        interval = 100 * 30
+        fastestInterval = 100
         priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
     }
 
@@ -31,24 +27,27 @@ class LocationManager(private val context: Context) {
 
     fun startLocationUpdates(locationCallback: LocationCallback) {
         Timber.d("Startup Location")
-        if (ContextCompat.checkSelfPermission(
-                context,
-                locationPermission
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                context as Activity,
-                arrayOf(locationPermission),
-                locationPermissionRequest
-            )
-            Timber.d("Request permition")
-            return
-        }
+
         callback = locationCallback
 
 
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            throw AccountsException("Necesitas los permisos para acceder al servicio")
+        }
+
+        Timber.d("Permissions Granted")
 
 
         fusedLocationClient.requestLocationUpdates(
@@ -57,6 +56,7 @@ class LocationManager(private val context: Context) {
             Looper.getMainLooper()
         )
     }
+
 
     fun stopLocationService() {
         fusedLocationClient.removeLocationUpdates(callback)

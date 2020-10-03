@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import androidx.core.app.ActivityCompat
+import timber.log.Timber
 
 
 class UidManager(private val context: Context) {
@@ -35,6 +36,7 @@ class UidManager(private val context: Context) {
                 )
             }
         }
+        Timber.d("Devide id is $deviceId")
         return deviceId
     }
 }

@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class HomeMapsFragment : Fragment() {
 
@@ -30,13 +31,14 @@ class HomeMapsFragment : Fragment() {
     }
 
     private lateinit var gMap: GoogleMap
-    private lateinit var locationCallback: LocationCallback
+    private var locationCallback = getCallback()
 
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
 
     private val safeArgs: HomeMapsFragmentArgs by navArgs()
+
 
     private val callback = OnMapReadyCallback { googleMap ->
         gMap = googleMap
@@ -49,7 +51,6 @@ class HomeMapsFragment : Fragment() {
     ): View? {
 
 
-        locationCallback = getCallback()
         viewModel.getUid()
 
         viewModel.profile = safeArgs.profile
@@ -60,13 +61,28 @@ class HomeMapsFragment : Fragment() {
         binding.viewModel = viewModel
         binding.floatingActionButton.setOnClickListener {
 
-            if (viewModel.locationStatus) {
+            if (viewModel.locationStatus.value!!) {
                 it.floatingActionButton.setImageResource(R.drawable.ic_baseline_play_arrow_24)
                 viewModel.stopLocationService()
             } else {
 
                 it.floatingActionButton.setImageResource(R.drawable.ic_baseline_pause_24)
-                viewModel.startLocationService(locationCallback)
+                val requestPermissions = viewModel.startLocationService(locationCallback)
+
+                if (requestPermissions!!) {
+
+                    it.floatingActionButton.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+                    requestPermissions(
+                        arrayOf(
+                            "android.permission.ACCESS_COARSE_LOCATION",
+                            "android.permission.ACCESS_FINE_LOCATION",
+                            "android.permission.ACCESS_BACKGROUND_LOCATION",
+                            "android.permission.READ_PHONE_STATE"
+                        ), 1
+                    )
+
+
+                }
             }
         }
 
@@ -84,13 +100,13 @@ class HomeMapsFragment : Fragment() {
     }
 
     private fun getCallback(): LocationCallback {
-
+        Timber.e("Getting callback")
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     gMap.clear()
-
+                    Timber.e("getting location")
 
                     val marker: MarkerOptions = MarkerOptions().position(
                         LatLng(
@@ -98,6 +114,7 @@ class HomeMapsFragment : Fragment() {
                             location.longitude
                         )
                     ).title(viewModel.profile?.user?.name)
+
                     gMap.addMarker(marker)
                     gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 17F))
                     uiScope.launch {

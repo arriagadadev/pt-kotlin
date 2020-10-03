@@ -1,9 +1,11 @@
 package cl.openworld.platformdev.ptkotlin.presentation.home
 
 
+import android.accounts.AccountsException
 import android.app.Application
 import android.location.Location
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import cl.openworld.platformdev.ptkotlin.data.models.Gps
 import cl.openworld.platformdev.ptkotlin.data.models.Profile
 import cl.openworld.platformdev.ptkotlin.domain.repositories.UserRepository
@@ -18,24 +20,33 @@ class HomeMapsViewModel(application: Application) : AndroidViewModel(application
 
     private val locationServices = LocationManager(application)
 
-    val repository = UserRepository(UserApi.retrofitService)
+    private val repository = UserRepository(UserApi.retrofitService)
 
     private val uidService = UidManager(application)
 
     var profile: Profile? = null
 
 
-    var locationStatus: Boolean = false
+    var locationStatus = MutableLiveData<Boolean>(false)
 
-    var uid: String? = null
+    private var uid: String? = null
 
 
-    fun startLocationService(locationCallback: LocationCallback) {
+    fun startLocationService(locationCallback: LocationCallback): Boolean? {
         try {
             locationServices.startLocationUpdates(locationCallback)
-            locationStatus = true
+            locationStatus.value = true
+            return false
         } catch (e: Exception) {
             Timber.d(e)
+
+            when (e) {
+                is AccountsException -> {
+                    return true
+                }
+            }
+            locationServices.stopLocationService()
+            return null
         }
 
     }
@@ -43,7 +54,7 @@ class HomeMapsViewModel(application: Application) : AndroidViewModel(application
     fun stopLocationService() {
         try {
             locationServices.stopLocationService()
-            locationStatus = false
+            locationStatus.value = false
         } catch (e: Exception) {
             Timber.d(e)
         }
@@ -63,7 +74,10 @@ class HomeMapsViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun sendLocation(location: Location) {
         try {
-            if (uid == null) getUid()
+            if (uid == null) {
+                getUid()
+                sendLocation(location)
+            }
 
             val gps = Gps("Decimal(${location.latitude})", "Decimal(${location.longitude})")
             val location = LocationModel(uid!!, gps)
@@ -72,7 +86,9 @@ class HomeMapsViewModel(application: Application) : AndroidViewModel(application
 
 
         } catch (e: Exception) {
+
             Timber.d(e)
+
         }
 
     }
