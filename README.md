@@ -2,8 +2,7 @@
 Este repositorio contiene las instrucciones de la prueba técnica para el puesto de **Android Developer (Kotlin)**.
 
 ### Link de descarga 
-https://drive.google.com/file/d/1PbpRCry81dxm_lxLj0aPGAHyXZPDIoru/view?usp=sharing
-
+https://drive.google.com/file/d/17_F1Hnm55SB5akih99JsoE1dfKywoouG/view
 ## INTRODUCCIÓN
 Con esta prueba técnica se busca evaluar las capacidades técnicas que tienen relación con las principales funciones que son requeridas para el cargo.
 

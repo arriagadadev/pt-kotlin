@@ -76,10 +76,11 @@ class HomeMapsViewModel(application: Application) : AndroidViewModel(application
         try {
             if (uid == null) {
                 getUid()
-                sendLocation(location)
+
             }
 
-            val gps = Gps("Decimal(${location.latitude})", "Decimal(${location.longitude})")
+
+            val gps = Gps(location.latitude.toString(), location.longitude.toString())
             val location = LocationModel(uid!!, gps)
 
             repository.sendLocation(location, "${profile?.access_token}")

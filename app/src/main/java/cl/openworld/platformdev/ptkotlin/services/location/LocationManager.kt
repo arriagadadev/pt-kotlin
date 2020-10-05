@@ -17,8 +17,8 @@ class LocationManager(private val context: Context) {
 
 
     private val locationRequest = LocationRequest.create()?.apply {
-        interval = 100 * 30
-        fastestInterval = 100
+        interval = 1000 * 30
+        fastestInterval = 1000
         priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
     }
 
